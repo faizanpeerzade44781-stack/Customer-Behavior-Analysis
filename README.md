@@ -1,128 +1,209 @@
-# Customer-Behavior-Analysis
-An end-to-end data analytics project using Python, SQL, and Power BI to clean data, generate KPIs, and build an interactive dashboard for customer purchase behavior insights.
-🛍️ Customer Shopping Behavior Analysis
+<div align="center">
+
+# 🛍️ Customer Shopping Behavior Analysis
+
+**End-to-end ETL pipeline (Python → SQL Server → Power BI) uncovering the customer subscription rate as the key growth lever.**
+
+![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white)
+![SQL Server](https://img.shields.io/badge/SQL_Server-CC2927?style=flat-square&logo=microsoftsqlserver&logoColor=white)
+![Power BI](https://img.shields.io/badge/Power_BI-F2C811?style=flat-square&logo=powerbi&logoColor=black)
+![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-D71F00?style=flat-square&logo=python&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)
+
+`#data-analytics` `#python` `#sql-server` `#power-bi` `#etl` `#customer-analytics` `#pandas`
+
+</div>
+
+<p align="center"><img src="assets/dashboard_preview.png" alt="Customer Behavior Dashboard" width="850"/></p>
+
+---
+
+## 📖 Table of Contents
+- [Business Problem](#-business-problem)
+- [Objectives](#-objectives)
+- [Dataset](#-dataset)
+- [Tech Stack](#-tech-stack)
+- [Folder Structure](#-folder-structure)
+- [Installation](#-installation)
+- [Data Cleaning Steps](#-data-cleaning-steps)
+- [Python Workflow](#-python--etl-workflow)
+- [SQL Exploration](#-sql-exploration)
+- [Power BI Dashboard](#-power-bi-dashboard)
+- [KPIs](#-kpis)
+- [Business Insights](#-business-insights)
+- [Recommendations](#-recommendations)
+- [Dashboard Screenshots](#️-dashboard-screenshots)
+- [Future Improvements](#-future-improvements)
+- [License](#-license)
+- [Acknowledgements](#-acknowledgements)
+
+---
+
+## 🧩 Business Problem
+
+A retailer wants to grow its subscription program but doesn't know which levers actually move subscription and repeat-purchase behavior. Raw transactional data exists but has never been cleaned, warehoused, or turned into a dashboard leadership can act on — this project simulates that corporate workflow end-to-end.
+
+## 🎯 Objectives
+
+- Clean and standardize raw customer shopping data for analysis
+- Warehouse the data in SQL Server via an automated Python → SQL load
+- Compute customer-level KPIs (CLV, repeat-purchase rate, basket size)
+- Build a Power BI dashboard to surface subscription and category insights
+- Recommend concrete actions to grow the subscriber base
+
+## 💾 Dataset
+
+| Attribute | Detail |
+|---|---|
+| Format | `.csv` |
+| Granularity | One row per customer transaction |
+| Currency | Originally USD, converted to INR (rate: 88) for local context |
+
+**Fields captured**
+
+- **Demographics:** Age, Gender, Subscription Status
+- **Transactional:** Purchase Amount, Frequency, Payment Method
+- **Product:** Category, Size, Color, Season
+- **Engagement:** Review Ratings, Discount Usage, Promo Codes
+
+## 🧰 Tech Stack
+
+| Layer | Tools |
+|---|---|
+| Cleaning & feature engineering | Python (Pandas, NumPy) |
+| ETL to warehouse | SQLAlchemy → SQL Server |
+| Querying / EDA | SQL Server (SSMS) |
+| Dashboard | Power BI (DAX) |
+
+## 📁 Folder Structure
+
+```
+Customer-Behavior-Analysis/
+│
+├── data/
+│   └── customer_shopping_behavior.csv
+│
+├── notebooks/
+│   └── Cleaned_Data.ipynb               # Cleaning, feature engineering, SQL load
+│
+├── sql/
+│   └── customer_behavior_project.sql    # EDA & business-question queries
+│
+├── dashboard/
+│   └── Customer_Behavior.pbix
+│
+├── assets/
+│   └── dashboard_preview.png
+│
+├── README.md
+└── LICENSE
+```
 
-📖 Overview
+## ⚙️ Installation
 
-This end-to-end data analytics project investigates customer shopping patterns to identify key revenue drivers and opportunities for loyalty program growth. The project simulates a real-world corporate workflow: cleaning raw data in Python, warehousing it in SQL Server, and delivering actionable insights via Power BI.
+```bash
+# 1. Clone the repository
+git clone https://github.com/faizanpeerzade44781-stack/Customer-Behavior-Analysis.git
+cd Customer-Behavior-Analysis
 
-💾 Dataset
+# 2. Create a virtual environment
+python -m venv venv
+source venv/bin/activate      # Windows: venv\Scripts\activate
 
-The dataset contains retail transaction records including:
+# 3. Install dependencies
+pip install pandas numpy sqlalchemy pyodbc jupyter
 
-Demographics: Age, Gender, Subscription Status.
+# 4. Configure your SQL Server connection string in the notebook,
+#    then run the ETL cells to load data into the `customer_behavior` table
 
-Transactional: Purchase Amount (USD converted to INR), Frequency, Payment Method.
+# 5. Open the dashboard
+#    Open dashboard/Customer_Behavior.pbix in Power BI Desktop and refresh
+```
 
-Product: Category, Size, Color, Season.
+## 🧹 Data Cleaning Steps
 
-Engagement: Review Ratings, Discount Usage, Promo Codes.
+- **Imputation:** filled missing `review_rating` values using the median rating *per product category* (category-aware, not a global median)
+- **Standardization:** renamed all columns to `snake_case` for SQL compatibility
+- **Currency conversion:** converted `purchase_amount` from USD to INR (rate: 88) to localize reporting
+- **Feature engineering:**
+  - `age_group`: bucketed into Young Adult / Adult / Middle Age / Senior
+  - Numeric frequency mapping: text values like *"Fortnightly"* converted to day-counts (e.g., 14) for proper numeric sorting
 
-🧰 Tools & Technologies
+## 🐍 Python + ETL Workflow
 
-Tool
+1. Load raw CSV with Pandas
+2. Clean, impute, and feature-engineer as above
+3. Connect to a local SQL Server instance via SQLAlchemy
+4. Load the cleaned DataFrame directly into a `customer_behavior` SQL table
+5. Hand off to SQL for exploratory querying and Power BI for visualization
 
-Usage
+## 🗄️ SQL Exploration
 
-Python (Pandas/NumPy)
+Representative business questions answered directly in SQL against the warehoused table:
 
-Data cleaning, handling missing values, and feature engineering.
+- How does shipping type (Standard vs. Express) affect average spend?
+- Who are the high-value customers who also use discounts?
+- What does the retention/repeat-purchase pattern look like based on purchase history?
 
-SQL Server (SSMS)
+## 📊 Power BI Dashboard
 
-Data storage and advanced SQL querying for EDA.
+- KPI cards: Total Revenue, Avg Purchase Value, Avg Customer Rating
+- Subscription-status donut chart
+- Category-wise revenue and volume breakdown
+- Age-group spend distribution
 
-SQLAlchemy
+## 📈 KPIs
 
-Establishing a direct ETL pipeline from Python to SQL.
+| KPI | Value |
+|---|---|
+| Total Revenue | **₹21M** |
+| Average Purchase Value | **₹5.26K** |
+| Average Customer Rating | **3.75 / 5.0** |
+| Subscriber Share | **7.3%** |
+| Non-Subscriber Share | **92.7%** |
 
-Power BI
+## 💡 Business Insights
 
-Creating the interactive dashboard and DAX measures.
+- **Subscription gap:** only **7.3%** of customers are subscribers — this is the single largest visible growth lever in the dataset
+- **Category leader:** *Clothing* dominates both revenue (**₹9.2M**) and order volume
+- **Demographic spread:** purchasing power is fairly even across all age groups — the common assumption that "Young Adults" drive most fashion spend does **not** hold in this data
+- **Shipping preference:** minimal spend difference between Standard and Express shipping customers
 
-🔄 Project Workflow & Steps
+## ✅ Recommendations
 
-1. Data Cleaning & Processing (Python)
+1. **Target "recurring" customers for subscription conversion** — customers identified in SQL with 5–15 historical purchases are the highest-propensity subscription candidates; offer them an exclusive incentive
+2. **Concentrate inventory investment in Clothing and Accessories**, which together account for ~75% of total revenue
+3. **Stop age-targeting assumptions** in marketing — since spend is evenly distributed by age, campaigns should segment by behavior (frequency, discount usage) instead of age bracket
+4. **Reconsider Express shipping premiums** — since the spend delta vs. Standard is minimal, logistics cost could potentially be optimized without hurting revenue
 
-Imputation: Handled missing Review Rating values by calculating the median rating per specific Category to ensure accuracy.
+## 🖼️ Dashboard Screenshots
 
-Standardization: Renamed all columns to snake_case for SQL compatibility.
+<!-- Replace with real exported PNGs -->
+<p align="center">
+  <img src="assets/subscription_donut.png" alt="Subscription Breakdown" width="45%"/>
+  <img src="assets/category_revenue.png" alt="Category Revenue" width="45%"/>
+</p>
 
-Currency Conversion: Converted Purchase Amount from USD to INR (rate: 88) to localize the context.
+## 🔮 Future Improvements
 
-2. Feature Engineering
+- [ ] A/B test framework to measure the impact of a subscription incentive campaign
+- [ ] Cohort analysis of repeat-purchase behavior over time (currently a single-snapshot view)
+- [ ] Automate the Python → SQL Server load as a scheduled job instead of a manual notebook run
+- [ ] Add RFM (Recency, Frequency, Monetary) segmentation
+- [ ] Migrate the `.pbix` to Power BI Service with scheduled refresh
 
-Age Segmentation: Created a new age_group column to classify users into Young Adult, Adult, Middle Age, and Senior.
+## 📄 License
 
-Frequency Quantification: Mapped text-based frequencies (e.g., "Fortnightly") to numeric values (e.g., 14 days) for analytical sorting.
+Licensed under the [MIT License](LICENSE).
 
-3. Database Management (SQL)
+## 🙏 Acknowledgements
 
-Established a connection to the local MSSQLSERVER01 instance.
+Built as an independent portfolio project by **Sayed Faizan Peerzade**, using a publicly available customer shopping behavior dataset for demonstration purposes.
 
-Automated the data load directly from the Pandas DataFrame to the customer_behavior table.
+---
 
-4. Exploratory Data Analysis (SQL)
+<div align="center">
 
-Executed complex SQL queries to answer business questions:
+📧 [faizanpeerzade44781@gmail.com](mailto:faizanpeerzade44781@gmail.com) · 💼 [LinkedIn](https://www.linkedin.com/in/sayed-peerzade-82377a24a) · 🐙 [GitHub](https://github.com/faizanpeerzade44781-stack)
 
-How does shipping type affect spending?
-
-Who are the high-value customers using discounts?
-
-What is the retention rate based on previous purchases?
-
-📊 Dashboard Insights
-
-The Power BI Dashboard highlights the following KPIs:
-
-Total Revenue: ₹21M
-
-Avg Purchase Value: ₹5.26K
-
-Avg Customer Rating: 3.75/5.0
-
-Key Visuals:
-
-Subscription Gap: A Donut Chart revealing that 92.7% of customers are non-subscribers.
-
-Category Leader: "Clothing" is the dominant category for both revenue (₹9.2M) and volume.
-
-Demographic Spread: Purchasing power is evenly distributed across all age groups, debunking the assumption that only "Young Adults" drive fashion sales.
-
-📈 Key Results & Recommendations
-
-Subscription Opportunity: The low subscription rate (7.3%) is a major growth area. I recommend targeting "Recurring" customers (identified via SQL as those with 5-15 purchases) with exclusive offers.
-
-Inventory Focus: Clothing and Accessories account for ~75% of total revenue; stock should be optimized around these categories.
-
-Shipping Preference: There is a minimal spend difference between "Standard" and "Express" shipping users, suggesting logistics costs could be optimized without hurting revenue.
-
-🚀 How to Run
-
-Clone the Repo:
-
-git clone [https://github.com/yourusername/customer-shopping-analysis.git](https://github.com/yourusername/customer-shopping-analysis.git)
-
-
-Install Requirements:
-
-pip install pandas numpy sqlalchemy pyodbc
-
-
-Setup SQL:
-
-Create database customer_behaviorr.
-
-Update the connection string in analysis_script.py.
-
-Execute Pipeline:
-
-python analysis_script.py
-
-
-View Dashboard:
-
-Open .pbix file and refresh data.
-
-Created by [Sayed Faizan]
+</div>
